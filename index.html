@@ -3,30 +3,35 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Controle</title>
+    <title>Controle — Visualizador de PDF</title>
     <style>
-      body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; margin: 2rem; line-height: 1.6; }
-      header { margin-bottom: 2rem; }
-      .container { max-width: 800px; }
+      html,body { height:100%; margin:0; }
+      body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; display:flex; flex-direction:column; }
+      header { padding:1rem; background:#0b63ce; color:white; }
+      .container { flex:1; display:flex; flex-direction:column; }
+      .viewer { flex:1; border:0; }
+      .fallback { padding:1rem; text-align:center; }
+      a.button { display:inline-block; padding:0.5rem 1rem; background:#0b63ce; color:#fff; text-decoration:none; border-radius:4px; }
     </style>
   </head>
   <body>
     <header>
-      <h1>Bem-vindo ao repositório controle</h1>
-      <p>Arquivo index.html inicial adicionado.</p>
+      <h1>Visualizador: 1-Fundamentos-e-Aplicacoes.pdf</h1>
+      <p>Usando o PDF direto no navegador — sem conversão para imagens.</p>
     </header>
+
     <main class="container">
-      <section>
-        <h2>Sobre</h2>
-        <p>Esta é a página inicial de exemplo para o repositório <strong>controle</strong>.</p>
-      </section>
-      <section>
-        <h2>Como usar</h2>
-        <p>Edite este arquivo para começar a construir a interface do seu projeto.</p>
-      </section>
+      <!-- objeto <object> fornece bom fallback e funciona na maioria dos navegadores com visualizador de PDF embutido -->
+      <object class="viewer" data="cap01/1-Fundamentos-e-Aplicacoes.pdf" type="application/pdf" width="100%" height="100%">
+        <div class="fallback">
+          <p>Seu navegador não suporta visualização embutida de PDF.</p>
+          <p><a class="button" href="cap01/1-Fundamentos-e-Aplicacoes.pdf" target="_blank" rel="noopener">Abrir/baixar PDF</a></p>
+        </div>
+      </object>
     </main>
-    <footer>
-      <p>&copy; 2026 RegiscpMarques</p>
+
+    <footer style="padding:0.5rem 1rem; text-align:center; font-size:0.9rem;">
+      <small>&copy; 2026 RegiscpMarques — Repositório controle</small>
     </footer>
   </body>
 </html>
