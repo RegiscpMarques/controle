@@ -1,37 +1,144 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Controle — Visualizador de PDF</title>
-    <style>
-      html,body { height:100%; margin:0; }
-      body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; display:flex; flex-direction:column; }
-      header { padding:1rem; background:#0b63ce; color:white; }
-      .container { flex:1; display:flex; flex-direction:column; }
-      .viewer { flex:1; border:0; }
-      .fallback { padding:1rem; text-align:center; }
-      a.button { display:inline-block; padding:0.5rem 1rem; background:#0b63ce; color:#fff; text-decoration:none; border-radius:4px; }
-    </style>
-  </head>
-  <body>
-    <header>
-      <h1>Visualizador: 1-Fundamentos-e-Aplicacoes.pdf</h1>
-      <p>Usando o PDF direto no navegador — sem conversão para imagens.</p>
-    </header>
 
-    <main class="container">
-      <!-- objeto <object> fornece bom fallback e funciona na maioria dos navegadores com visualizador de PDF embutido -->
-      <object class="viewer" data="cap01/1-Fundamentos-e-Aplicacoes.pdf" type="application/pdf" width="100%" height="100%">
-        <div class="fallback">
-          <p>Seu navegador não suporta visualização embutida de PDF.</p>
-          <p><a class="button" href="cap01/1-Fundamentos-e-Aplicacoes.pdf" target="_blank" rel="noopener">Abrir/baixar PDF</a></p>
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+
+    <title>EngHub</title>
+
+    <!-- Bootstrap -->
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+</head>
+
+<body>
+
+<div class="container py-4">
+
+    <div class="text-center mb-5">
+
+        <h1 class="display-3">⚡</h1>
+
+        <h2 class="fw-bold">
+
+            EngHub
+
+        </h2>
+
+        <p>
+
+            Automação e Controle
+
+        </p>
+
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-12">
+
+            <button class="btn btn-success w-100 p-4">
+
+                <i class="bi bi-cpu-fill"></i>
+
+                Circuitos CC
+
+            </button>
+
         </div>
-      </object>
-    </main>
 
-    <footer style="padding:0.5rem 1rem; text-align:center; font-size:0.9rem;">
-      <small>&copy; 2026 RegiscpMarques — Repositório controle</small>
-    </footer>
-  </body>
+        <div class="col-12">
+
+            <button class="btn btn-primary w-100 p-4">
+
+                <i class="bi bi-diagram-3-fill"></i>
+
+                Unidade 1 - Revisão de Laplace
+
+            </button>
+
+        </div>
+
+        <div class="col-12">
+
+            <button class="btn btn-warning w-100 p-4">
+
+                <i class="bi bi-calendar-event"></i>
+
+                 Unidade 2 - Resposta ao Degrau
+
+            </button>
+
+        </div>
+
+        <div class="col-12">
+
+            <button class="btn btn-danger w-100 p-4">
+
+                <i class="bi bi-controller"></i>
+
+                 Unidade 3 - Estabilidade
+
+            </button>
+
+        </div>
+
+        <div class="col-12">
+
+            <button class="btn btn-info w-100 p-4">
+
+                <i class="bi bi-robot"></i>
+
+                 Unidade 4 - Erro em Regime Permanente
+
+            </button>
+
+        </div>
+	
+	<div class="col-12">
+
+            <button class="btn btn-info w-100 p-4">
+
+                <i class="bi bi-robot"></i>
+
+                 Unidade 5 - Técnicas de Modelagem
+
+            </button>
+
+        </div>
+
+	<div class="col-12">
+
+            <button class="btn btn-info w-100 p-4">
+
+                <i class="bi bi-robot"></i>
+
+                 Unidade 6 - Controlador PID
+
+            </button>
+
+        </div>
+
+
+
+    </div>
+
+</div>
+
+</body>
+
 </html>
