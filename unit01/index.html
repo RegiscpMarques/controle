@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1">
+  <title></title>
+  <style>
+    /* Página limpa: sem margens, fundo preto para visual melhor */
+    html,body{height:100%;margin:0;background:#000}
+    /* Container vertical que conterá a sequência de imagens (duplicada para loop suave) */
+    #ticker{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      width:100%;
+      /* evitar barra de rolagem do navegador enquanto animamos */
+      overflow:hidden;
+      will-change:transform;
+    }
+    #ticker img{
+      width:100%;
+      height:auto;
+      display:block;
+      user-select:none;
+      -webkit-user-drag:none;
+      pointer-events:none; /* evita seleção acidental durante arraste */
+    }
+    /* Animação será definida via JS com duração calculada conforme o conteúdo */
+    @keyframes scroll {
+      from{transform:translateY(0)}
+      to{transform:translateY(-50%)} /* move metade do conteúdo (porque duplicamos) */
+    }
+  </style>
+</head>
+<body>
+  <div id="ticker" aria-hidden="true"></div>
+
+  <script>
+    (function(){
+      const COUNT = 17; // número de slides
+      const container = document.getElementById('ticker');
+
+      // Cria elementos <img> para cada slide e os adiciona
+      function createSequence(){
+        for(let i=1;i<=COUNT;i++){
+          const img = document.createElement('img');
+          // Nomes de arquivo com espaços e parênteses -> usar percent-encoding
+          img.src = encodeURI(`slide (${i}).png`);
+          img.alt = '';
+          img.loading = 'lazy';
+          container.appendChild(img);
+        }
+      }
+
+      // Duplica a sequência para obter loop contínuo e sem salto
+      function duplicateSequence(){
+        const nodes = Array.from(container.children).map(n => n.cloneNode(true));
+        nodes.forEach(n => container.appendChild(n));
+      }
+
+      createSequence();
+      duplicateSequence();
+
+      // Espera carregar as imagens para medir o tamanho e definir a duração da animação
+      const imgs = container.querySelectorAll('img');
+      let loaded = 0;
+      function tryStart(){
+        // totalHeight corresponde à altura do conteúdo duplicado; queremos mover metade (a sequência original)
+        const totalHeight = container.scrollHeight / 2;
+        if (!totalHeight) return;
+        // velocidade em pixels por segundo (ajustável): menor -> mais lento; maior -> mais rápido
+        const pxPerSec = 40; // valor pensável para leitura; altere se quiser rolagem mais rápida
+        const durationSec = Math.max(10, Math.round(totalHeight / pxPerSec));
+
+        // Define a animação CSS
+        container.style.animation = `scroll ${durationSec}s linear infinite`;
+        container.style.animationPlayState = 'running';
+      }
+
+      imgs.forEach(img => {
+        if (img.complete) {
+          if(++loaded === imgs.length) tryStart();
+        } else {
+          img.addEventListener('load', () => { if(++loaded === imgs.length) tryStart(); });
+          img.addEventListener('error', () => { if(++loaded === imgs.length) tryStart(); });
+        }
+      });
+
+      // Toque/clique: primeiro gesto tenta ativar tela cheia (a maioria dos navegadores permite apenas após gesto do usuário)
+      // e também alterna pausar/resumir a animação. Mantemos a página sem controles visíveis.
+      let firstGesture = true;
+      function togglePause(){
+        const state = container.style.animationPlayState === 'paused' ? 'running' : 'paused';
+        container.style.animationPlayState = state;
+      }
+
+      function onUserGesture(){
+        if(firstGesture){
+          firstGesture = false;
+          // Tenta entrar em fullscreen no elemento raiz
+          const el = document.documentElement;
+          if(el.requestFullscreen) el.requestFullscreen().catch(()=>{});
+          else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+        }
+        togglePause();
+      }
+
+      // Suporte a toque e clique (um toque pausa/resume e pede fullscreen na primeira vez)
+      document.addEventListener('click', onUserGesture);
+      document.addEventListener('touchstart', onUserGesture, {passive:true});
+
+      // Opcional: pausa ao perder foco da janela (útil em mobile ao abrir teclado/menus)
+      window.addEventListener('visibilitychange', ()=>{
+        if(document.hidden) container.style.animationPlayState = 'paused';
+        else container.style.animationPlayState = 'running';
+      });
+
+      // Acessibilidade: permitir usar a tecla Espaço para pausar/resumir (se o usuário abrir teclado em fullscreen)
+      document.addEventListener('keydown', (e)=>{
+        if(e.code === 'Space'){
+          e.preventDefault();
+          togglePause();
+        }
+      });
+
+      // Pequena segurança: se nada carregar (arquivos com outro nome), criar uma mensagem de erro em console
+      setTimeout(()=>{
+        if(container.children.length === 0) console.error('Nenhuma imagem encontrada em unit01 com os nomes slide (1).png ... slide (17).png');
+      }, 3000);
+
+    })();
+  </script>
+</body>
+</html>
