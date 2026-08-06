@@ -59,7 +59,7 @@
       }
 
       createSequence();
-      duplicateSequence();
+      //duplicateSequence();
 
       // Espera carregar as imagens para medir o tamanho e definir a duração da animação
       const imgs = container.querySelectorAll('img');
@@ -76,7 +76,7 @@
         container.style.animation = `scroll ${durationSec}s linear infinite`;
         container.style.animationPlayState = 'running';
       }
-
+      <!--
       imgs.forEach(img => {
         if (img.complete) {
           if(++loaded === imgs.length) tryStart();
@@ -127,7 +127,8 @@
       setTimeout(()=>{
         if(container.children.length === 0) console.error('Nenhuma imagem encontrada em unit01 com os nomes slide (1).png ... slide (17).png');
       }, 3000);
-
+      -->
+        
     })();
   </script>
 </body>
