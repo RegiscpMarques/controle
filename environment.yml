@@ -1,5 +1,23 @@
+name: octave
+
 channels:
   - conda-forge
+
 dependencies:
+  - python=3.11
+
+  - notebook=7.2.*
+
+  - jupyterlab=4.2.*
+
+  - jupyter_server=2.15.*
+
+  - ipykernel
+
   - octave
+
   - octave_kernel
+
+  - gnuplot
+
+  - matplotlib
