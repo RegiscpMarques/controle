@@ -1,0 +1,1555 @@
+<!doctype html>
+
+<html lang="pt-BR">
+
+<head>
+
+  <meta charset="utf-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1, minimum-scale=1"
+
+>
+
+  <title>Slides</title>
+
+  <style>
+
+    /*
+     * ============================================================
+     * CONFIGURAÇÃO GERAL
+     * ============================================================
+     */
+
+    * {
+      box-sizing: border-box;
+    }
+
+
+    html,
+    body {
+
+      width: 100%;
+      height: 100%;
+
+      margin: 0;
+
+      background: #000;
+
+      overflow: hidden;
+
+    }
+
+
+    body {
+
+      font-family: Arial, Helvetica, sans-serif;
+
+      user-select: none;
+      -webkit-user-select: none;
+
+    }
+
+
+    /*
+     * ============================================================
+     * VIEWPORT
+     * ============================================================
+     *
+     * É a área que mostra o slide.
+     */
+
+    #viewport {
+
+      position: fixed;
+
+      inset: 0;
+
+      width: 100%;
+      height: 100%;
+
+      overflow: hidden;
+
+      background: #000;
+
+      cursor: default;
+
+      touch-action: none;
+
+    }
+
+
+    /*
+     * ============================================================
+     * SLIDE
+     * ============================================================
+     */
+
+    #slide {
+
+      position: absolute;
+
+      left: 50%;
+      top: 50%;
+
+      /*
+       * A imagem inicialmente ocupa toda a área disponível
+       * mantendo sua proporção.
+       */
+
+      width: 100vw;
+      height: 100vh;
+
+      object-fit: contain;
+
+      transform:
+        translate(-50%, -50%)
+        scale(1);
+
+      transform-origin: center center;
+
+      will-change: transform;
+
+      pointer-events: none;
+
+      user-select: none;
+      -webkit-user-select: none;
+
+      -webkit-user-drag: none;
+
+    }
+
+
+    /*
+     * ============================================================
+     * CONTROLES
+     * ============================================================
+     */
+
+    #controls {
+
+      position: fixed;
+
+      left: 50%;
+      bottom: 20px;
+
+      transform:
+        translateX(-50%)
+        translateY(10px);
+
+      z-index: 100;
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 8px;
+
+      padding: 8px 12px;
+
+      background:
+        rgba(0, 0, 0, 0.75);
+
+      border-radius: 12px;
+
+      opacity: 0;
+
+      transition:
+        opacity 0.25s ease,
+        transform 0.25s ease;
+
+      pointer-events: none;
+
+    }
+
+
+    #controls.visible {
+
+      opacity: 1;
+
+      transform:
+        translateX(-50%)
+        translateY(0);
+
+      pointer-events: auto;
+
+    }
+
+
+    #controls button {
+
+      width: 42px;
+      height: 42px;
+
+      border: none;
+
+      border-radius: 8px;
+
+      background:
+        rgba(255, 255, 255, 0.15);
+
+      color: #fff;
+
+      font-size: 22px;
+
+      cursor: pointer;
+
+    }
+
+
+    #controls button:hover {
+
+      background:
+        rgba(255, 255, 255, 0.30);
+
+    }
+
+
+    #zoomLevel {
+
+      min-width: 58px;
+
+      color: #fff;
+
+      font-size: 14px;
+
+      text-align: center;
+
+    }
+
+
+    /*
+     * ============================================================
+     * INDICADOR DO SLIDE
+     * ============================================================
+     */
+
+    #slideNumber {
+
+      position: fixed;
+
+      right: 20px;
+      bottom: 20px;
+
+      z-index: 100;
+
+      padding: 8px 12px;
+
+      color: #fff;
+
+      background:
+        rgba(0, 0, 0, 0.65);
+
+      border-radius: 8px;
+
+      font-size: 14px;
+
+      opacity: 0;
+
+      transition:
+        opacity 0.25s ease;
+
+      pointer-events: none;
+
+    }
+
+
+    #slideNumber.visible {
+
+      opacity: 1;
+
+    }
+
+
+    /*
+     * ============================================================
+     * INDICAÇÃO DE ZOOM
+     * ============================================================
+     */
+
+    #zoomHint {
+
+      position: fixed;
+
+      left: 50%;
+      top: 20px;
+
+      transform:
+        translateX(-50%);
+
+      z-index: 100;
+
+      padding: 8px 14px;
+
+      color: #fff;
+
+      background:
+        rgba(0, 0, 0, 0.75);
+
+      border-radius: 8px;
+
+      font-size: 13px;
+
+      opacity: 0;
+
+      transition:
+        opacity 0.25s ease;
+
+      pointer-events: none;
+
+    }
+
+
+    #zoomHint.visible {
+
+      opacity: 1;
+
+    }
+
+
+    /*
+     * ============================================================
+     * CURSOR QUANDO AMPLIADO
+     * ============================================================
+     */
+
+    #viewport.zoomed {
+
+      cursor: grab;
+
+    }
+
+
+    #viewport.dragging {
+
+      cursor: grabbing;
+
+    }
+
+
+  </style>
+
+</head>
+
+<body>
+
+  <!-- ============================================================
+       VIEWPORT
+       ============================================================ -->
+
+  <div id="viewport">
+
+```
+<img
+  id="slide"
+  src=""
+  alt="Slide"
+  draggable="false"
+>
+```
+
+  </div>
+
+  <!-- ============================================================
+       NÚMERO DO SLIDE
+       ============================================================ -->
+
+  <div id="slideNumber">
+    1 / 18
+  </div>
+
+  <!-- ============================================================
+       AVISO DE ZOOM
+       ============================================================ -->
+
+  <div id="zoomHint">
+
+```
+Arraste para navegar · Ctrl + roda para zoom · 0 para restaurar
+```
+
+  </div>
+
+  <!-- ============================================================
+       CONTROLES
+       ============================================================ -->
+
+  <div id="controls">
+
+```
+<button
+  id="previous"
+  type="button"
+  title="Slide anterior">
+  ←
+</button>
+
+
+<button
+  id="zoomOut"
+  type="button"
+  title="Diminuir zoom">
+  −
+</button>
+
+
+<span id="zoomLevel">
+  100%
+</span>
+
+
+<button
+  id="zoomIn"
+  type="button"
+  title="Aumentar zoom">
+  +
+</button>
+
+
+<button
+  id="zoomReset"
+  type="button"
+  title="Restaurar zoom">
+  1:1
+</button>
+
+
+<button
+  id="next"
+  type="button"
+  title="Próximo slide">
+  →
+</button>
+
+
+<button
+  id="fullscreen"
+  type="button"
+  title="Tela cheia">
+  ⛶
+</button>
+```
+
+  </div>
+
+  <!-- ============================================================
+       JAVASCRIPT
+       ============================================================ -->
+
+  <script>
+
+    (() => {
+
+
+      /*
+       * ==========================================================
+       * CONFIGURAÇÃO
+       * ==========================================================
+       */
+
+      const COUNT = 17;
+
+      const MIN_ZOOM = 1;
+
+      const MAX_ZOOM = 5;
+
+      const ZOOM_STEP = 0.25;
+
+
+      /*
+       * ==========================================================
+       * ELEMENTOS
+       * ==========================================================
+       */
+
+      const viewport =
+        document.getElementById('viewport');
+
+      const slide =
+        document.getElementById('slide');
+
+      const controls =
+        document.getElementById('controls');
+
+      const slideNumber =
+        document.getElementById('slideNumber');
+
+      const zoomHint =
+        document.getElementById('zoomHint');
+
+      const zoomLevel =
+        document.getElementById('zoomLevel');
+
+      const previousButton =
+        document.getElementById('previous');
+
+      const nextButton =
+        document.getElementById('next');
+
+      const zoomInButton =
+        document.getElementById('zoomIn');
+
+      const zoomOutButton =
+        document.getElementById('zoomOut');
+
+      const zoomResetButton =
+        document.getElementById('zoomReset');
+
+      const fullscreenButton =
+        document.getElementById('fullscreen');
+
+
+      /*
+       * ==========================================================
+       * ESTADO
+       * ==========================================================
+       */
+
+      let currentSlide = 1;
+
+      let zoom = 1;
+
+      let offsetX = 0;
+
+      let offsetY = 0;
+
+      let dragging = false;
+
+      let dragStartX = 0;
+
+      let dragStartY = 0;
+
+      let dragOriginX = 0;
+
+      let dragOriginY = 0;
+
+      let controlsTimer = null;
+
+      let hintTimer = null;
+
+
+      /*
+       * ==========================================================
+       * CARREGA DO SLIDE
+       * ==========================================================
+       */
+
+      function loadSlide(number) {
+
+        /*
+         * Garante que o número permaneça entre 1 e COUNT.
+         */
+
+        number =
+          Math.max(
+            1,
+            Math.min(
+              COUNT,
+              number
+            )
+          );
+
+
+        currentSlide =
+          number;
+
+
+        /*
+         * Quando muda de slide,
+         * o zoom volta para 100%.
+         */
+
+        zoom = 1;
+
+        offsetX = 0;
+
+        offsetY = 0;
+
+
+        viewport.classList.remove(
+          'zoomed'
+        );
+
+
+        /*
+         * Nome dos arquivos:
+         *
+         * slide (1).png
+         * slide (2).png
+         * ...
+         */
+
+        slide.src =
+          encodeURI(
+            `slide (${currentSlide}).png`
+          );
+
+
+        updateTransform();
+
+        updateSlideNumber();
+
+        updateZoomLevel();
+
+        showInterface();
+
+      }
+
+
+      /*
+       * ==========================================================
+       * PRÓXIMO / ANTERIOR
+       * ==========================================================
+       */
+
+      function nextSlide() {
+
+        if (currentSlide < COUNT) {
+
+          loadSlide(
+            currentSlide + 1
+          );
+
+        }
+
+      }
+
+
+      function previousSlide() {
+
+        if (currentSlide > 1) {
+
+          loadSlide(
+            currentSlide - 1
+          );
+
+        }
+
+      }
+
+
+      /*
+       * ==========================================================
+       * NÚMERO DO SLIDE
+       * ==========================================================
+       */
+
+      function updateSlideNumber() {
+
+        slideNumber.textContent =
+          `${currentSlide} / ${COUNT}`;
+
+      }
+
+
+      /*
+       * ==========================================================
+       * TRANSFORMAÇÃO
+       * ==========================================================
+       */
+
+      function updateTransform() {
+
+        slide.style.transform =
+          `translate(calc(-50% + ${offsetX}px), calc(-50% + ${offsetY}px)) scale(${zoom})`;
+
+      }
+
+
+      /*
+       * ==========================================================
+       * LIMITES DO ARRASTE
+       * ==========================================================
+       *
+       * Quando o slide está ampliado, não permitimos que ele seja
+       * arrastado completamente para fora da tela.
+       */
+
+      function clampOffsets() {
+
+        if (zoom <= 1) {
+
+          offsetX = 0;
+
+          offsetY = 0;
+
+          return;
+
+        }
+
+
+        const viewportWidth =
+          viewport.clientWidth;
+
+        const viewportHeight =
+          viewport.clientHeight;
+
+
+        /*
+         * Como a imagem usa 100vw x 100vh,
+         * sua dimensão base corresponde ao viewport.
+         *
+         * Portanto, com zoom = 2,
+         * a imagem terá aproximadamente o dobro do tamanho.
+         */
+
+        const extraWidth =
+          viewportWidth * (zoom - 1);
+
+        const extraHeight =
+          viewportHeight * (zoom - 1);
+
+
+        /*
+         * Metade do excesso pode ser deslocada
+         * para cada lado.
+         */
+
+        const maxX =
+          extraWidth / 2;
+
+        const maxY =
+          extraHeight / 2;
+
+
+        offsetX =
+          Math.max(
+            -maxX,
+            Math.min(
+              maxX,
+              offsetX
+            )
+          );
+
+
+        offsetY =
+          Math.max(
+            -maxY,
+            Math.min(
+              maxY,
+              offsetY
+            )
+          );
+
+      }
+
+
+      /*
+       * ==========================================================
+       * ZOOM
+       * ==========================================================
+       */
+
+      function setZoom(
+        newZoom,
+        centerX,
+        centerY
+      ) {
+
+        const oldZoom =
+          zoom;
+
+
+        newZoom =
+          Math.max(
+            MIN_ZOOM,
+            Math.min(
+              MAX_ZOOM,
+              newZoom
+            )
+          );
+
+
+        if (
+          newZoom === oldZoom
+        ) {
+
+          return;
+
+        }
+
+
+        /*
+         * Se o ponto não foi informado,
+         * usa o centro da tela.
+         */
+
+        if (
+          centerX === undefined
+        ) {
+
+          centerX =
+            viewport.clientWidth / 2;
+
+        }
+
+
+        if (
+          centerY === undefined
+        ) {
+
+          centerY =
+            viewport.clientHeight / 2;
+
+        }
+
+
+        /*
+         * Calcula o novo deslocamento para que o ponto
+         * sob o mouse permaneça no mesmo local.
+         */
+
+        const ratio =
+          newZoom / oldZoom;
+
+
+        offsetX =
+          centerX -
+          (
+            centerX -
+            offsetX -
+            viewport.clientWidth / 2
+          ) *
+          ratio -
+          viewport.clientWidth / 2;
+
+
+        offsetY =
+          centerY -
+          (
+            centerY -
+            offsetY -
+            viewport.clientHeight / 2
+          ) *
+          ratio -
+          viewport.clientHeight / 2;
+
+
+        zoom =
+          newZoom;
+
+
+        clampOffsets();
+
+        updateTransform();
+
+        updateZoomLevel();
+
+
+        if (zoom > 1) {
+
+          viewport.classList.add(
+            'zoomed'
+          );
+
+          showZoomHint();
+
+        } else {
+
+          viewport.classList.remove(
+            'zoomed'
+          );
+
+          offsetX = 0;
+
+          offsetY = 0;
+
+          updateTransform();
+
+        }
+
+
+        showInterface();
+
+      }
+
+
+      function zoomIn() {
+
+        setZoom(
+          zoom + ZOOM_STEP
+        );
+
+      }
+
+
+      function zoomOut() {
+
+        setZoom(
+          zoom - ZOOM_STEP
+        );
+
+      }
+
+
+      function resetZoom() {
+
+        zoom = 1;
+
+        offsetX = 0;
+
+        offsetY = 0;
+
+
+        viewport.classList.remove(
+          'zoomed'
+        );
+
+
+        updateTransform();
+
+        updateZoomLevel();
+
+        showInterface();
+
+      }
+
+
+      function updateZoomLevel() {
+
+        zoomLevel.textContent =
+          `${Math.round(zoom * 100)}%`;
+
+      }
+
+
+      /*
+       * ==========================================================
+       * RODA DO MOUSE + CTRL
+       * ==========================================================
+       */
+
+      viewport.addEventListener(
+        'wheel',
+        (event) => {
+
+          /*
+           * Sem Ctrl:
+           *
+           * não fazemos nada.
+           *
+           * Isso permite que o comportamento normal da roda
+           * não seja usado para trocar slides.
+           */
+
+          if (!event.ctrlKey) {
+
+            return;
+
+          }
+
+
+          event.preventDefault();
+
+
+          const rect =
+            viewport.getBoundingClientRect();
+
+
+          const x =
+            event.clientX -
+            rect.left;
+
+
+          const y =
+            event.clientY -
+            rect.top;
+
+
+          const factor =
+            event.deltaY < 0
+              ? 1.1
+              : 1 / 1.1;
+
+
+          setZoom(
+            zoom * factor,
+            x,
+            y
+          );
+
+        },
+        {
+          passive: false
+        }
+      );
+
+
+      /*
+       * ==========================================================
+       * ARRASTE
+       * ==========================================================
+       */
+
+      viewport.addEventListener(
+        'pointerdown',
+        (event) => {
+
+          if (zoom <= 1) {
+
+            return;
+
+          }
+
+
+          if (
+            event.pointerType === 'mouse' &&
+            event.button !== 0
+          ) {
+
+            return;
+
+          }
+
+
+          dragging = true;
+
+
+          dragStartX =
+            event.clientX;
+
+          dragStartY =
+            event.clientY;
+
+
+          dragOriginX =
+            offsetX;
+
+          dragOriginY =
+            offsetY;
+
+
+          viewport.classList.add(
+            'dragging'
+          );
+
+
+          viewport.setPointerCapture(
+            event.pointerId
+          );
+
+
+          event.preventDefault();
+
+        }
+      );
+
+
+      viewport.addEventListener(
+        'pointermove',
+        (event) => {
+
+          if (!dragging) {
+
+            return;
+
+          }
+
+
+          offsetX =
+            dragOriginX +
+            (
+              event.clientX -
+              dragStartX
+            );
+
+
+          offsetY =
+            dragOriginY +
+            (
+              event.clientY -
+              dragStartY
+            );
+
+
+          clampOffsets();
+
+          updateTransform();
+
+
+          event.preventDefault();
+
+        }
+      );
+
+
+      function finishDrag() {
+
+        dragging = false;
+
+        viewport.classList.remove(
+          'dragging'
+        );
+
+      }
+
+
+      viewport.addEventListener(
+        'pointerup',
+        finishDrag
+      );
+
+
+      viewport.addEventListener(
+        'pointercancel',
+        finishDrag
+      );
+
+
+      /*
+       * ==========================================================
+       * DUPLO CLIQUE
+       * ==========================================================
+       */
+
+      viewport.addEventListener(
+        'dblclick',
+        (event) => {
+
+          event.preventDefault();
+
+
+          const rect =
+            viewport.getBoundingClientRect();
+
+
+          const x =
+            event.clientX -
+            rect.left;
+
+
+          const y =
+            event.clientY -
+            rect.top;
+
+
+          if (zoom === 1) {
+
+            setZoom(
+              2,
+              x,
+              y
+            );
+
+          } else {
+
+            resetZoom();
+
+          }
+
+        }
+      );
+
+
+      /*
+       * ==========================================================
+       * TECLADO
+       * ==========================================================
+       */
+
+      document.addEventListener(
+        'keydown',
+        (event) => {
+
+          /*
+           * Slide anterior
+           */
+
+          if (
+            event.key === 'ArrowLeft'
+          ) {
+
+            event.preventDefault();
+
+            previousSlide();
+
+            return;
+
+          }
+
+
+          /*
+           * Próximo slide
+           */
+
+          if (
+            event.key === 'ArrowRight'
+          ) {
+
+            event.preventDefault();
+
+            nextSlide();
+
+            return;
+
+          }
+
+
+          /*
+           * Home
+           */
+
+          if (
+            event.key === 'Home'
+          ) {
+
+            event.preventDefault();
+
+            loadSlide(1);
+
+            return;
+
+          }
+
+
+          /*
+           * End
+           */
+
+          if (
+            event.key === 'End'
+          ) {
+
+            event.preventDefault();
+
+            loadSlide(COUNT);
+
+            return;
+
+          }
+
+
+          /*
+           * Zoom +
+           */
+
+          if (
+            event.key === '+' ||
+            event.key === '='
+          ) {
+
+            event.preventDefault();
+
+            zoomIn();
+
+            return;
+
+          }
+
+
+          /*
+           * Zoom -
+           */
+
+          if (
+            event.key === '-'
+          ) {
+
+            event.preventDefault();
+
+            zoomOut();
+
+            return;
+
+          }
+
+
+          /*
+           * Zoom 100%
+           */
+
+          if (
+            event.key === '0'
+          ) {
+
+            event.preventDefault();
+
+            resetZoom();
+
+            return;
+
+          }
+
+
+          /*
+           * Fullscreen
+           */
+
+          if (
+            event.key === 'f' ||
+            event.key === 'F'
+          ) {
+
+            event.preventDefault();
+
+            toggleFullscreen();
+
+            return;
+
+          }
+
+        }
+      );
+
+
+      /*
+       * ==========================================================
+       * FULLSCREEN
+       * ==========================================================
+       */
+
+      async function toggleFullscreen() {
+
+        try {
+
+          if (
+            !document.fullscreenElement
+          ) {
+
+            if (
+              document.documentElement
+                .requestFullscreen
+            ) {
+
+              await document.documentElement
+                .requestFullscreen();
+
+            }
+
+          } else {
+
+            if (
+              document.exitFullscreen
+            ) {
+
+              await document.exitFullscreen();
+
+            }
+
+          }
+
+        } catch (error) {
+
+          console.warn(
+            'Não foi possível alterar o fullscreen:',
+            error
+          );
+
+        }
+
+      }
+
+
+      fullscreenButton.addEventListener(
+        'click',
+        (event) => {
+
+          event.stopPropagation();
+
+          toggleFullscreen();
+
+          showInterface();
+
+        }
+      );
+
+
+      /*
+       * ==========================================================
+       * BOTÕES DE NAVEGAÇÃO
+       * ==========================================================
+       */
+
+      previousButton.addEventListener(
+        'click',
+        (event) => {
+
+          event.stopPropagation();
+
+          previousSlide();
+
+        }
+      );
+
+
+      nextButton.addEventListener(
+        'click',
+        (event) => {
+
+          event.stopPropagation();
+
+          nextSlide();
+
+        }
+      );
+
+
+      zoomInButton.addEventListener(
+        'click',
+        (event) => {
+
+          event.stopPropagation();
+
+          zoomIn();
+
+        }
+      );
+
+
+      zoomOutButton.addEventListener(
+        'click',
+        (event) => {
+
+          event.stopPropagation();
+
+          zoomOut();
+
+        }
+      );
+
+
+      zoomResetButton.addEventListener(
+        'click',
+        (event) => {
+
+          event.stopPropagation();
+
+          resetZoom();
+
+        }
+      );
+
+
+      /*
+       * ==========================================================
+       * INTERFACE
+       * ==========================================================
+       */
+
+      function showInterface() {
+
+        controls.classList.add(
+          'visible'
+        );
+
+        slideNumber.classList.add(
+          'visible'
+        );
+
+
+        clearTimeout(
+          controlsTimer
+        );
+
+
+        controlsTimer =
+          setTimeout(
+            () => {
+
+              controls.classList.remove(
+                'visible'
+              );
+
+              slideNumber.classList.remove(
+                'visible'
+              );
+
+            },
+            3000
+          );
+
+      }
+
+
+      function showZoomHint() {
+
+        zoomHint.classList.add(
+          'visible'
+        );
+
+
+        clearTimeout(
+          hintTimer
+        );
+
+
+        hintTimer =
+          setTimeout(
+            () => {
+
+              zoomHint.classList.remove(
+                'visible'
+              );
+
+            },
+            2500
+          );
+
+      }
+
+
+      /*
+       * ==========================================================
+       * MOVIMENTO DO MOUSE
+       * ==========================================================
+       *
+       * Mostra os controles quando o mouse se movimenta.
+       */
+
+      document.addEventListener(
+        'mousemove',
+        () => {
+
+          showInterface();
+
+        }
+      );
+
+
+      /*
+       * ==========================================================
+       * PRIMEIRO CLIQUE
+       * ==========================================================
+       *
+       * Mantém a característica do seu projeto original:
+       * o primeiro gesto pode colocar a apresentação em fullscreen.
+       */
+
+      let firstGesture = true;
+
+
+      viewport.addEventListener(
+        'click',
+        () => {
+
+          if (firstGesture) {
+
+            firstGesture = false;
+
+            toggleFullscreen();
+
+          }
+
+          showInterface();
+
+        }
+      );
+
+
+      /*
+       * ==========================================================
+       * INICIALIZAÇÃO
+       * ==========================================================
+       */
+
+      loadSlide(1);
+
+
+    })();
+
+  </script>
+
+</body>
+
+</html>

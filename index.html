@@ -11,6 +11,7 @@
     <title>Automação e Controle </title>
 
     <!-- Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
           rel="stylesheet">
@@ -61,15 +62,51 @@
 
         </div>
 
-        <div class="col-12">
+        <!-- Botão principal -->
+        <button class="btn btn-primary w-100 p-4"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#unidades"
+            aria-expanded="false"
+            aria-controls="unidades">
 
-            <a href="./unit02/index.html" class="btn btn-primary w-100 p-4">
+            <i class="bi bi-diagram-3-fill"></i>
 
-                <i class="bi bi-diagram-3-fill"></i>
+            Unidade 2 - Transformada de Laplace
 
-                Unidade 2 - Revisão de Laplace
+        </button>
 
-            </a>
+        <!-- Botões que aparecem ao clicar -->
+        <div class="collapse mt-2" id="unidades">
+
+           <!-- <div class="d-grid gap-2"> -->
+             <div class="d-flex flex-column align-items-center gap-2">
+
+                <a href="./unit02/index.html"
+                class="btn btn-primary w-75 p-3">
+                    <i class="bi bi-1-circle"></i>
+                    Revisão de Laplace
+                </a>
+
+                <a href="./unit03/index.html"
+                class="btn btn-primary w-75 p-3">
+                    <i class="bi bi-2-circle"></i>
+                    Circuitos Elétricos
+                </a>
+
+                <a href="./unit04/index.html"
+                class="btn btn-primary w-75 p-3">
+                    <i class="bi bi-3-circle"></i>
+                    Amplificadores Operacionais
+                </a>
+
+                <a href="./unit05/index.html"
+                class="btn btn-primary w-75 p-3">
+                    <i class="bi bi-4-circle"></i>
+                    Sistemas com Realimentação
+                </a>
+
+            </div>
 
         </div>
 
