@@ -18,6 +18,12 @@ dependencies:
 
   - octave_kernel
 
+  - octave-control
+  - octave-signal
+  - octave-symbolic
+  - octave-optim
+  - octave-image
+
   - gnuplot
 
   - matplotlib
